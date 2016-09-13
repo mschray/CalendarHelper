@@ -10,155 +10,131 @@ using Newtonsoft.Json;
 
 public static async Task<Database> GetOrCreateDatabaseAsync(DocumentClient client, string id)
 {
-
     Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().SingleOrDefault();
 
     if (database == null)
-
     {
-
         database = await client.CreateDatabaseAsync(new Database { Id = id });
-
     }
 
     return database;
+}
+
+public static async Task<DocumentCollection> GetOrCreateCollectionAsync(DocumentClient client, string databaseId, string collectionId)
+{
+
+    DocumentCollection collection = client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseId))
+        .Where(c => c.Id == collectionId).ToArray().SingleOrDefault();
+
+    if (collection == null)
+    {
+        collection = await CreateDocumentCollectionWithRetriesAsync(client, databaseId, new DocumentCollection { Id = collectionId });
+    }
+    return collection;
+}
+
+public static async Task<DocumentCollection> CreateDocumentCollectionWithRetriesAsync(DocumentClient client, string databaseId, DocumentCollection collectionDefinition, 
+    int? offerThroughput = 400)
+{
+
+    return await ExecuteWithRetries(
+
+        client,
+
+        () => client.CreateDocumentCollectionAsync(
+
+                UriFactory.CreateDatabaseUri(databaseId),
+
+                collectionDefinition,
+
+                new RequestOptions { OfferThroughput = offerThroughput }));
 
 }
 
-  public static async Task<DocumentCollection> GetOrCreateCollectionAsync(DocumentClient client, string databaseId, string collectionId)
+
+public static async Task<V> ExecuteWithRetries<V>(DocumentClient client, Func<Task<V>> function)
+
+{
+
+    TimeSpan sleepTime = TimeSpan.Zero;
+
+
+
+    while (true)
+
+    {
+
+        try
 
         {
 
-            DocumentCollection collection = client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseId))
+            return await function();
 
-                .Where(c => c.Id == collectionId).ToArray().SingleOrDefault();
+        }
 
+        catch (DocumentClientException de)
 
+        {
 
-            if (collection == null)
+            if ((int)de.StatusCode != 429 && (int)de.StatusCode != 449)
 
             {
 
-                collection = await CreateDocumentCollectionWithRetriesAsync(client, databaseId, new DocumentCollection { Id = collectionId });
+                throw;
 
             }
 
 
 
-            return collection;
+            sleepTime = de.RetryAfter;
 
         }
 
-public static async Task<DocumentCollection> CreateDocumentCollectionWithRetriesAsync(
-
-            DocumentClient client, 
-
-            string databaseId, 
-
-            DocumentCollection collectionDefinition, 
-
-            int? offerThroughput = 400)
+        catch (AggregateException ae)
 
         {
 
-            return await ExecuteWithRetries(
-
-                client,
-
-                () => client.CreateDocumentCollectionAsync(
-
-                        UriFactory.CreateDatabaseUri(databaseId),
-
-                        collectionDefinition,
-
-                        new RequestOptions { OfferThroughput = offerThroughput }));
-
-        }
-
-
-        public static async Task<V> ExecuteWithRetries<V>(DocumentClient client, Func<Task<V>> function)
-
-        {
-
-            TimeSpan sleepTime = TimeSpan.Zero;
-
-
-
-            while (true)
+            if (!(ae.InnerException is DocumentClientException))
 
             {
 
-                try
+                throw;
 
-                {
-
-                    return await function();
-
-                }
-
-                catch (DocumentClientException de)
-
-                {
-
-                    if ((int)de.StatusCode != 429 && (int)de.StatusCode != 449)
-
-                    {
-
-                        throw;
-
-                    }
+            }
 
 
 
-                    sleepTime = de.RetryAfter;
+            DocumentClientException de = (DocumentClientException)ae.InnerException;
 
-                }
+            if ((int)de.StatusCode != 429)
 
-                catch (AggregateException ae)
+            {
 
-                {
+                throw;
 
-                    if (!(ae.InnerException is DocumentClientException))
-
-                    {
-
-                        throw;
-
-                    }
+            }
 
 
 
-                    DocumentClientException de = (DocumentClientException)ae.InnerException;
+            sleepTime = de.RetryAfter;
 
-                    if ((int)de.StatusCode != 429)
+            if (sleepTime < TimeSpan.FromMilliseconds(10))
 
-                    {
+            {
 
-                        throw;
-
-                    }
-
-
-
-                    sleepTime = de.RetryAfter;
-
-                    if (sleepTime < TimeSpan.FromMilliseconds(10))
-
-                    {
-
-                        sleepTime = TimeSpan.FromMilliseconds(10);
-
-                    }
-
-                }
-
-
-
-                await Task.Delay(sleepTime);
+                sleepTime = TimeSpan.FromMilliseconds(10);
 
             }
 
         }
+
+
+
+        await Task.Delay(sleepTime);
+
+    }
+
+}
 
 private static string BccEmailAddress = "mschray@microsoft";
 private static string SchedulerEmailAddress = "edi@calendar.help";
@@ -170,29 +146,21 @@ private static TraceWriter logger;
 public static async void LogRequest(string jsonifiedData)
 
 {
-
-
     
-
-	//https://startupexpertrequest.documents.azure.com:443/
-
     string DocDBEndpoint = ConfigurationManager.AppSettings["DOCDB_ENDPOINT"].ToString();
-
-	//kDVV2xnfNTN6CYf5rIv9xlv6oCnWuoh34cqP3yCVD8FFU4g0e2OZuS3jx5iEkh7jL2BlNrwEZ2kRI41um9WCpQ==
 
     string DocDBAuthKey = ConfigurationManager.AppSettings["DOCDB_AUTHKEY"].ToString();
 
-    string dbName = "ExpertReqestLogDB";
-    string colName = "ExpertReqestLogCollection";
+    string ExpertRequestDBName = ConfigurationManager.AppSettings["EXPERT_REQUEST_DBNAME"].ToString();
+    string ExperRequestColName = ConfigurationManager.AppSettings["EXPERT_REQUEST_COLLNAME"].ToString();
 
     using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
     {
-       Database db = await GetOrCreateDatabaseAsync(client, "ExpertReqestLogDB" );
-       DocumentCollection col = await GetOrCreateCollectionAsync(client, dbName,  colName);
+       Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
+       DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
        Document doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
 
     }
-
 
 }
 
