@@ -143,7 +143,7 @@ private static string FromEmailAddress = "mschray@microsoft.com";
 private static Dictionary<string,string> ExpertDictionary;
 private static TraceWriter logger;
 
-public static async void LogRequest(string jsonifiedData)
+public static async Task<Document> LogRequest(string jsonifiedData)
 {
     try
     {
