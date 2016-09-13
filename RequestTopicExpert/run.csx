@@ -56,10 +56,12 @@ static void LoadTopicExperts()
     ExpertDictionary.Add("Node","ryanjoy@microsoft.com");
     ExpertDictionary.Add("Azure Functions","mschray@microsoft.com");
     ExpertDictionary.Add("Azure App Services","mschray@microsoft.com");
-    
-    logger.Info($"Loaded experts: {ExpertDictionary.Keys.ToString()}");
-    logger.Info($"Loaded experts: {ExpertDictionary.Values.ToString()}");
-    
+
+    foreach (var item in collection)
+    {
+        logger.Info($"Loaded topic: {item.ToString()}");
+        
+    }
 }
 
 public static string GetExpert(string Topic, string Conversation)
