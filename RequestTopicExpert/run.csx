@@ -271,7 +271,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 Personalization personalization = new Personalization();
                 personalization.AddTo(new Email(SchedulerEmailAddress));  
                 personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
-                personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.ReqestedConversation)));
+                personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
                 string SendGridKey = ConfigurationManager.AppSettings["SEND_GRID_API_KEY"].ToString();
                 //log.Info($"The retrived key is {SendGridKey}");
