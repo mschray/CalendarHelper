@@ -143,7 +143,7 @@ private static string FromEmailAddress = "mschray@microsoft.com";
 private static Dictionary<string,string> ExpertDictionary;
 private static TraceWriter logger;
 
-public static async Task<Document> LogRequest(string jsonifiedData)
+public static async Task<Document> LogRequest(ExpertRequest Request)
 {
 
      logger.Info($"Log Request input ={jsonifiedData}."); 
@@ -163,7 +163,7 @@ public static async Task<Document> LogRequest(string jsonifiedData)
         {
             Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
             DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
-            doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
+            doc = await client.CreateDocumentAsync(col.SelfLink, Request );
         }
     }
     catch (Exception ex)
@@ -296,9 +296,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                string s = JsonConvert.SerializeObject(data);
-
-                await LogRequest(s);
+                await LogRequest(data);
             }
             catch (Exception ex)
             {
