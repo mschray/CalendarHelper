@@ -1,3 +1,7 @@
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
+using Newtonsoft.Json;
+
 public static class DocDBHelper
 {
 
