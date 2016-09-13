@@ -187,7 +187,7 @@ public static async void LogRequest(string jsonifiedData)
 
     using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
     {
-       Database db = await GetOrCreateDatabaseAsyn(client, "ExpertReqestLogDB" );
+       Database db = await GetOrCreateDatabaseAsync(client, "ExpertReqestLogDB" );
        DocumentCollection col = await GetOrCreateCollectionAsync(client, dbName,  colName);
        Document doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
 
