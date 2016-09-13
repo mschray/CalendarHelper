@@ -290,7 +290,9 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                await LogRequest(JsonConvert.SerializeObject<ExpertRequest>(data));
+                string s = JsonConvert.SerializeObject(data);
+
+                await LogRequest(s);
             }
             catch (Exception ex)
             {
