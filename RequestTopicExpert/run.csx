@@ -311,8 +311,11 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         : req.CreateResponse(HttpStatusCode.OK, "Making expert request");
 }
 
+public static class DocDBHelper
+{
 
-//enum DayHalf { Morning, Sun, Mon, Tue, Wed, Thu, Fri };
+}
+
 public enum DayHalf {Morning, Afternoon};
 
 public class ExpertRequest
