@@ -76,6 +76,89 @@ public static async Task<DocumentCollection> CreateDocumentCollectionWithRetries
         }
 
 
+        public static async Task<V> ExecuteWithRetries<V>(DocumentClient client, Func<Task<V>> function)
+
+        {
+
+            TimeSpan sleepTime = TimeSpan.Zero;
+
+
+
+            while (true)
+
+            {
+
+                try
+
+                {
+
+                    return await function();
+
+                }
+
+                catch (DocumentClientException de)
+
+                {
+
+                    if ((int)de.StatusCode != 429 && (int)de.StatusCode != 449)
+
+                    {
+
+                        throw;
+
+                    }
+
+
+
+                    sleepTime = de.RetryAfter;
+
+                }
+
+                catch (AggregateException ae)
+
+                {
+
+                    if (!(ae.InnerException is DocumentClientException))
+
+                    {
+
+                        throw;
+
+                    }
+
+
+
+                    DocumentClientException de = (DocumentClientException)ae.InnerException;
+
+                    if ((int)de.StatusCode != 429)
+
+                    {
+
+                        throw;
+
+                    }
+
+
+
+                    sleepTime = de.RetryAfter;
+
+                    if (sleepTime < TimeSpan.FromMilliseconds(10))
+
+                    {
+
+                        sleepTime = TimeSpan.FromMilliseconds(10);
+
+                    }
+
+                }
+
+
+
+                await Task.Delay(sleepTime);
+
+            }
+
+        }
 
 private static string BccEmailAddress = "mschray@microsoft";
 private static string SchedulerEmailAddress = "edi@calendar.help";
