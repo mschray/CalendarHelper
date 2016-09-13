@@ -146,7 +146,7 @@ private static TraceWriter logger;
 public static async Task<Document> LogRequest(ExpertRequest Request)
 {
 
-     logger.Info($"Log Request input ={jsonifiedData}."); 
+     logger.Info($"Log Request input ={Requeest}."); 
 
     Document doc=null;
 
@@ -168,7 +168,7 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
     }
     catch (Exception ex)
     {
-        logger.Info($"Input ={jsonifiedData} had an exception of {ex.Message}."); 
+        logger.Info($"Input ={Request} had an exception of {ex.Message}."); 
     }
 
     return doc;
