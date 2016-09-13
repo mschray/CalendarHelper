@@ -1,3 +1,5 @@
+//https://azure.microsoft.com/en-us/documentation/articles/functions-reference-csharp/
+#load "DocumentDBHelper.csx"
 using System;
 using System.Net;
 using System.Net.Mail;
@@ -311,10 +313,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         : req.CreateResponse(HttpStatusCode.OK, "Making expert request");
 }
 
-public static class DocDBHelper
-{
-
-}
 
 public enum DayHalf {Morning, Afternoon};
 
