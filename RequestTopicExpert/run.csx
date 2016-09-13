@@ -57,8 +57,8 @@ static void LoadTopicExperts()
     ExpertDictionary.Add("Azure Functions","mschray@microsoft.com");
     ExpertDictionary.Add("Azure App Services","mschray@microsoft.com");
     
-    logger.Info($"Loaded experts: {ExpertDictionary.Keys()ToString()}");
-    logger.Info($"Loaded experts: {ExpertDictionary.Values()ToString()}");
+    logger.Info($"Loaded experts: {ExpertDictionary.Keys.ToString()}");
+    logger.Info($"Loaded experts: {ExpertDictionary.Values.ToString()}");
     
 }
 
