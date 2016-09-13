@@ -57,7 +57,7 @@ static void LoadTopicExperts()
     ExpertDictionary.Add("Azure Functions","mschray@microsoft.com");
     ExpertDictionary.Add("Azure App Services","mschray@microsoft.com");
 
-    foreach (var item in collection)
+    foreach (var item in ExpertDictionary)
     {
         logger.Info($"Loaded topic: {item.ToString()}");
         
