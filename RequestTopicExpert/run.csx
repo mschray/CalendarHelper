@@ -146,7 +146,7 @@ private static TraceWriter logger;
 public static async Task<Document> LogRequest(ExpertRequest Request)
 {
 
-     logger.Info($"Log Request input ={Requeest}."); 
+     logger.Info($"Log Request input ={Request}."); 
 
     Document doc=null;
 
