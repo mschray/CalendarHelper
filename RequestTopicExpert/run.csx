@@ -10,133 +10,133 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 
-public static async Task<Database> GetOrCreateDatabaseAsync(DocumentClient client, string id)
-{
-    Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().SingleOrDefault();
+// public static async Task<Database> GetOrCreateDatabaseAsync(DocumentClient client, string id)
+// {
+//     Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().SingleOrDefault();
 
-    if (database == null)
-    {
-        database = await client.CreateDatabaseAsync(new Database { Id = id });
-    }
+//     if (database == null)
+//     {
+//         database = await client.CreateDatabaseAsync(new Database { Id = id });
+//     }
 
-    return database;
-}
+//     return database;
+// }
 
-public static async Task<DocumentCollection> GetOrCreateCollectionAsync(DocumentClient client, string databaseId, string collectionId)
-{
+// public static async Task<DocumentCollection> GetOrCreateCollectionAsync(DocumentClient client, string databaseId, string collectionId)
+// {
 
-    DocumentCollection collection = client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseId))
-        .Where(c => c.Id == collectionId).ToArray().SingleOrDefault();
+//     DocumentCollection collection = client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseId))
+//         .Where(c => c.Id == collectionId).ToArray().SingleOrDefault();
 
-    if (collection == null)
-    {
-        collection = await CreateDocumentCollectionWithRetriesAsync(client, databaseId, new DocumentCollection { Id = collectionId });
-    }
-    return collection;
-}
+//     if (collection == null)
+//     {
+//         collection = await CreateDocumentCollectionWithRetriesAsync(client, databaseId, new DocumentCollection { Id = collectionId });
+//     }
+//     return collection;
+// }
 
-public static async Task<DocumentCollection> CreateDocumentCollectionWithRetriesAsync(DocumentClient client, string databaseId, DocumentCollection collectionDefinition, 
-    int? offerThroughput = 400)
-{
+// public static async Task<DocumentCollection> CreateDocumentCollectionWithRetriesAsync(DocumentClient client, string databaseId, DocumentCollection collectionDefinition, 
+//     int? offerThroughput = 400)
+// {
 
-    return await ExecuteWithRetries(
+//     return await ExecuteWithRetries(
 
-        client,
+//         client,
 
-        () => client.CreateDocumentCollectionAsync(
+//         () => client.CreateDocumentCollectionAsync(
 
-                UriFactory.CreateDatabaseUri(databaseId),
+//                 UriFactory.CreateDatabaseUri(databaseId),
 
-                collectionDefinition,
+//                 collectionDefinition,
 
-                new RequestOptions { OfferThroughput = offerThroughput }));
+//                 new RequestOptions { OfferThroughput = offerThroughput }));
 
-}
-
-
-public static async Task<V> ExecuteWithRetries<V>(DocumentClient client, Func<Task<V>> function)
-
-{
-
-    TimeSpan sleepTime = TimeSpan.Zero;
+// }
 
 
+// public static async Task<V> ExecuteWithRetries<V>(DocumentClient client, Func<Task<V>> function)
 
-    while (true)
+// {
 
-    {
-
-        try
-
-        {
-
-            return await function();
-
-        }
-
-        catch (DocumentClientException de)
-
-        {
-
-            if ((int)de.StatusCode != 429 && (int)de.StatusCode != 449)
-
-            {
-
-                throw;
-
-            }
+//     TimeSpan sleepTime = TimeSpan.Zero;
 
 
 
-            sleepTime = de.RetryAfter;
+//     while (true)
 
-        }
+//     {
 
-        catch (AggregateException ae)
+//         try
 
-        {
+//         {
 
-            if (!(ae.InnerException is DocumentClientException))
+//             return await function();
 
-            {
+//         }
 
-                throw;
+//         catch (DocumentClientException de)
 
-            }
+//         {
 
+//             if ((int)de.StatusCode != 429 && (int)de.StatusCode != 449)
 
+//             {
 
-            DocumentClientException de = (DocumentClientException)ae.InnerException;
+//                 throw;
 
-            if ((int)de.StatusCode != 429)
-
-            {
-
-                throw;
-
-            }
+//             }
 
 
 
-            sleepTime = de.RetryAfter;
+//             sleepTime = de.RetryAfter;
 
-            if (sleepTime < TimeSpan.FromMilliseconds(10))
+//         }
 
-            {
+//         catch (AggregateException ae)
 
-                sleepTime = TimeSpan.FromMilliseconds(10);
+//         {
 
-            }
+//             if (!(ae.InnerException is DocumentClientException))
 
-        }
+//             {
+
+//                 throw;
+
+//             }
 
 
 
-        await Task.Delay(sleepTime);
+//             DocumentClientException de = (DocumentClientException)ae.InnerException;
 
-    }
+//             if ((int)de.StatusCode != 429)
 
-}
+//             {
+
+//                 throw;
+
+//             }
+
+
+
+//             sleepTime = de.RetryAfter;
+
+//             if (sleepTime < TimeSpan.FromMilliseconds(10))
+
+//             {
+
+//                 sleepTime = TimeSpan.FromMilliseconds(10);
+
+//             }
+
+//         }
+
+
+
+//         await Task.Delay(sleepTime);
+
+//     }
+
+// }
 
 private static string BccEmailAddress = "mschray@microsoft";
 private static string SchedulerEmailAddress = "edi@calendar.help";
@@ -163,8 +163,8 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
 
         using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
         {
-            Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
-            DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
+            Database db = await DocumentDBHelper.GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
+            DocumentCollection col = await DocumentDBHelper.GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
             doc = await client.CreateDocumentAsync(col.SelfLink, Request );
         }
     }
