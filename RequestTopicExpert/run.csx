@@ -49,6 +49,32 @@ public static async Task<Database> GetOrCreateDatabaseAsync(DocumentClient clien
 
         }
 
+public static async Task<DocumentCollection> CreateDocumentCollectionWithRetriesAsync(
+
+            DocumentClient client, 
+
+            string databaseId, 
+
+            DocumentCollection collectionDefinition, 
+
+            int? offerThroughput = 400)
+
+        {
+
+            return await ExecuteWithRetries(
+
+                client,
+
+                () => client.CreateDocumentCollectionAsync(
+
+                        UriFactory.CreateDatabaseUri(databaseId),
+
+                        collectionDefinition,
+
+                        new RequestOptions { OfferThroughput = offerThroughput }));
+
+        }
+
 
 
 private static string BccEmailAddress = "mschray@microsoft";
