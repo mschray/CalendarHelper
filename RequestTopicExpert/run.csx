@@ -285,7 +285,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                LogRequest(JsonConvert.SerializeObject(data));
+                await LogRequest(JsonConvert.SerializeObject(data));
             }
             catch (Exception ex)
             {
