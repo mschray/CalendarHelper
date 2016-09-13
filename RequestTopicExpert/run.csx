@@ -167,6 +167,31 @@ private static string FromEmailAddress = "mschray@microsoft.com";
 private static Dictionary<string,string> ExpertDictionary;
 private static TraceWriter logger;
 
+public static async void LogRequest(string jsonifiedData)
+
+{
+
+
+	//https://startupexpertrequest.documents.azure.com:443/
+
+    string DocDBEndpoint = ConfigurationManager.AppSettings["DOCDB_ENDPOINT"].ToString();
+
+	//kDVV2xnfNTN6CYf5rIv9xlv6oCnWuoh34cqP3yCVD8FFU4g0e2OZuS3jx5iEkh7jL2BlNrwEZ2kRI41um9WCpQ==
+
+    string DocDBAuthKey = ConfigurationManager.AppSettings["DOCDB_AUTHKEY"].ToString();
+
+    using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
+  
+    {
+ 
+       Document doc = await client.CreateDocumentAsync("dbs/db_rid/colls/coll_rid/", jsonifiedData );
+
+    }
+
+
+}
+
+
 static void LoadTopicExperts()
 {
     ExpertDictionary = new Dictionary<string, string>();
