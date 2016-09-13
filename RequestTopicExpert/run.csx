@@ -296,7 +296,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                await LogRequest(data);
+                await LogRequest((ExpertRequest)data);
             }
             catch (Exception ex)
             {
