@@ -242,13 +242,14 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
     // get request body
     dynamic data = await req.Content.ReadAsAsync<object>();
-    string topic = data?.Topic;
-    string firstname = data?.ReqestorFirstName;
-    string lastname = data?.ReqestorLastName;
-    string email = data?.ReqestorEmailAddress;
-    string conversation = data?.RequestedConversation;
-    DayHalf when = data?.RequestedDayHalf;
-    bool   isTest = data?.IsTest;
+    ExpertRequest aExpertRequest = new ExperRequest();
+    aExpertRequest.Topic = data?.Topic;
+    aExpertRequest.ReqestorFirstName = data?.ReqestorFirstName;
+    aExpertRequest.ReqestorLastNamestring = data?.ReqestorLastName;
+    aExpertRequest.ReqestorEmailAddress = data?.ReqestorEmailAddress;
+    aExpertRequest.RequestedConversationstring = data?.RequestedConversation;
+    aExpertRequest.RequestedDayHalf = data?.RequestedDayHalf;
+    aExpertRequest.IsTest = data?.IsTest;
     
     log.Info($"Dyanmic data is Request Content={data}");
 
