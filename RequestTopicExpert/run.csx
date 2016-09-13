@@ -253,9 +253,9 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
     log.Info($"Dyanmic data is Request Content={data}");
 
-    log.Info($"conversation={conversation}");
+    log.Info($"conversation={aExpertRequest.RequestedConversation}");
 
-    if (email == null)
+    if (aExpertRequest.ReqestorEmailAddress == null)
     {
         return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass all the fields in the request body");
     }
