@@ -245,9 +245,9 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     ExpertRequest aExpertRequest = new ExpertRequest();
     aExpertRequest.Topic = data?.Topic;
     aExpertRequest.ReqestorFirstName = data?.ReqestorFirstName;
-    aExpertRequest.ReqestorLastNamestring = data?.ReqestorLastName;
+    aExpertRequest.ReqestorLastName = data?.ReqestorLastName;
     aExpertRequest.ReqestorEmailAddress = data?.ReqestorEmailAddress;
-    aExpertRequest.RequestedConversationstring = data?.RequestedConversation;
+    aExpertRequest.RequestedConversation = data?.RequestedConversation;
     aExpertRequest.RequestedDayHalf = data?.RequestedDayHalf;
     aExpertRequest.IsTest = data?.IsTest;
     
