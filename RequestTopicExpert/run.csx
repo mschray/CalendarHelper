@@ -283,7 +283,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 string subject = "Expert Scheduling request";
     
-                Email to = new Email(GetExpert(topic,conversation));
+                Email to = new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation));
         
                 string messageContent = $"Edi, can you scheudle a Skype for business call between the people on the to line tomorrow {when.ToString().ToLower()}?" 
                     +"\n" + $"The conversation will cover the following, {conversation}";
@@ -321,7 +321,7 @@ public class ExpertRequest
     public string ReqestorFirstName {get;set;}
     public string ReqestorLastName {get;set;}
     public string ReqestorEmailAddress {get;set;}
-    public string ReqestedConversation {get; set;}
+    public string RequestedConversation {get; set;}
     public DayHalf RequestedDayHalf {get; set;}
     public bool   IsTest {get; set;}
 }
