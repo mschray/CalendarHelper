@@ -144,23 +144,29 @@ private static Dictionary<string,string> ExpertDictionary;
 private static TraceWriter logger;
 
 public static async void LogRequest(string jsonifiedData)
-
 {
-    
-    string DocDBEndpoint = ConfigurationManager.AppSettings["DOCDB_ENDPOINT"].ToString();
-
-    string DocDBAuthKey = ConfigurationManager.AppSettings["DOCDB_AUTHKEY"].ToString();
-
-    string ExpertRequestDBName = ConfigurationManager.AppSettings["EXPERT_REQUEST_DBNAME"].ToString();
-    string ExperRequestColName = ConfigurationManager.AppSettings["EXPERT_REQUEST_COLLNAME"].ToString();
-
-    using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
+    try
     {
-       Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
-       DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
-       Document doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
+        string DocDBEndpoint = ConfigurationManager.AppSettings["DOCDB_ENDPOINT"].ToString();
 
+        string DocDBAuthKey = ConfigurationManager.AppSettings["DOCDB_AUTHKEY"].ToString();
+
+        string ExpertRequestDBName = ConfigurationManager.AppSettings["EXPERT_REQUEST_DBNAME"].ToString();
+        string ExperRequestColName = ConfigurationManager.AppSettings["EXPERT_REQUEST_COLLNAME"].ToString();
+
+        using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
+        {
+        Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
+        DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
+        Document doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
+
+        }
     }
+    catch (Exception ex)
+    {
+        logger.Info($"Input ={jsonifiedData} had an exception of {ex.Message}."); 
+    }
+
 
 }
 
