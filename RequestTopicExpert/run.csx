@@ -166,8 +166,6 @@ public static async void LogRequest(string jsonifiedData)
     {
         logger.Info($"Input ={jsonifiedData} had an exception of {ex.Message}."); 
     }
-
-
 }
 
 
@@ -231,7 +229,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
     log.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
 
-
     // parse query parameter
     string name = req.GetQueryNameValuePairs()
         .FirstOrDefault(q => string.Compare(q.Key, "Topic", true) == 0)
@@ -293,7 +290,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                await LogRequest(JsonConvert.SerializeObject(data));
+                await LogRequest(JsonConvert.SerializeObject<ExpertRequest>(data));
             }
             catch (Exception ex)
             {
