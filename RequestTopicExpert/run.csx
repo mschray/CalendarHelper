@@ -145,6 +145,9 @@ private static TraceWriter logger;
 
 public static async Task<Document> LogRequest(string jsonifiedData)
 {
+
+     logger.Info($"Log Request input ={jsonifiedData}."); 
+
     Document doc=null;
 
     try
@@ -158,11 +161,9 @@ public static async Task<Document> LogRequest(string jsonifiedData)
 
         using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
         {
-        Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
-        DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
-        doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
-
-
+            Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
+            DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
+            doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
         }
     }
     catch (Exception ex)
