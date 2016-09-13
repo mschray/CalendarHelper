@@ -8,6 +8,25 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 
+public static async Task<Database> GetOrCreateDatabaseAsync(DocumentClient client, string id)
+{
+
+    Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().SingleOrDefault();
+
+    if (database == null)
+
+    {
+
+        database = await client.CreateDatabaseAsync(new Database { Id = id });
+
+    }
+
+    return database;
+
+}
+
+
+
 private static string BccEmailAddress = "mschray@microsoft";
 private static string SchedulerEmailAddress = "edi@calendar.help";
 //private static string SchedulerEmailAddress = "martin.schray@hotmail.com";
