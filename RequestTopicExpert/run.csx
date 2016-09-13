@@ -4,6 +4,9 @@ using System.Net.Mail;
 using System.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
+using Newtonsoft.Json;
 
 private static string BccEmailAddress = "mschray@microsoft";
 private static string SchedulerEmailAddress = "edi@calendar.help";
