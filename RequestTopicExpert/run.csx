@@ -163,8 +163,8 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
 
         using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
         {
-            Database db = await DocumentDBHelper.GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
-            DocumentCollection col = await DocumentDBHelper.GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
+            Database db = await  DocDBHelper.GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
+            DocumentCollection col = await  DocDBHelper.GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
             doc = await client.CreateDocumentAsync(col.SelfLink, Request );
         }
     }
