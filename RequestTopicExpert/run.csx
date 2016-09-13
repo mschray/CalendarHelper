@@ -145,6 +145,8 @@ private static TraceWriter logger;
 
 public static async Task<Document> LogRequest(string jsonifiedData)
 {
+    Document doc=null;
+
     try
     {
         string DocDBEndpoint = ConfigurationManager.AppSettings["DOCDB_ENDPOINT"].ToString();
@@ -158,7 +160,8 @@ public static async Task<Document> LogRequest(string jsonifiedData)
         {
         Database db = await GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
         DocumentCollection col = await GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
-        Document doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
+        doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
+
 
         }
     }
@@ -166,6 +169,8 @@ public static async Task<Document> LogRequest(string jsonifiedData)
     {
         logger.Info($"Input ={jsonifiedData} had an exception of {ex.Message}."); 
     }
+
+    return doc;
 }
 
 
