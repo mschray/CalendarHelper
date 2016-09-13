@@ -291,7 +291,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 Mail mail = new Mail(from, subject, to, content);
                 mail.AddPersonalization(personalization);
-                mail.MailSettings = GetMailSettings(aExpertRequest.isTest);
+                mail.MailSettings = GetMailSettings(aExpertRequest.IsTest);
                 
                 log.Info($"Email body\n {mail.Get()} ");
     
@@ -306,7 +306,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
             
     }
 
-    return email == null
+    return aExpertRequest.ReqestorEmailAddress == null
         ? req.CreateResponse(HttpStatusCode.BadRequest, "Please pass in all the fields in the query string or in the request body")
         : req.CreateResponse(HttpStatusCode.OK, "Making expert request");
 }
