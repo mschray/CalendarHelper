@@ -25,6 +25,30 @@ public static async Task<Database> GetOrCreateDatabaseAsync(DocumentClient clien
 
 }
 
+  public static async Task<DocumentCollection> GetOrCreateCollectionAsync(DocumentClient client, string databaseId, string collectionId)
+
+        {
+
+            DocumentCollection collection = client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseId))
+
+                .Where(c => c.Id == collectionId).ToArray().SingleOrDefault();
+
+
+
+            if (collection == null)
+
+            {
+
+                collection = await CreateDocumentCollectionWithRetriesAsync(client, databaseId, new DocumentCollection { Id = collectionId });
+
+            }
+
+
+
+            return collection;
+
+        }
+
 
 
 private static string BccEmailAddress = "mschray@microsoft";
