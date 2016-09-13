@@ -247,6 +247,8 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     DayHalf when = data?.RequestedDayHalf;
     bool   isTest = data?.IsTest;
     
+    log.Info($"Dyanmic data is Request Content={data}");
+
     log.Info($"conversation={conversation}");
 
     if (email == null)
