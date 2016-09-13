@@ -172,6 +172,8 @@ public static async void LogRequest(string jsonifiedData)
 {
 
 
+    
+
 	//https://startupexpertrequest.documents.azure.com:443/
 
     string DocDBEndpoint = ConfigurationManager.AppSettings["DOCDB_ENDPOINT"].ToString();
@@ -180,11 +182,14 @@ public static async void LogRequest(string jsonifiedData)
 
     string DocDBAuthKey = ConfigurationManager.AppSettings["DOCDB_AUTHKEY"].ToString();
 
+    string dbName = "ExpertReqestLogDB";
+    string colName = "ExpertReqestLogCollection";
+
     using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
-  
     {
- 
-       Document doc = await client.CreateDocumentAsync("dbs/db_rid/colls/coll_rid/", jsonifiedData );
+       Database db = await GetOrCreateDatabaseAsyn(client, "ExpertReqestLogDB" );
+       DocumentCollection col = await GetOrCreateCollectionAsync(client, dbName,  colName);
+       Document doc = await client.CreateDocumentAsync(col.SelfLink, jsonifiedData );
 
     }
 
