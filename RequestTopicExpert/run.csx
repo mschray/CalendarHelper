@@ -285,19 +285,19 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 Email to = new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation));
         
-                string messageContent = $"Edi, can you scheudle a Skype for business call between the people on the to line tomorrow {when.ToString().ToLower()}?" 
-                    +"\n" + $"The conversation will cover the following, {conversation}";
+                string messageContent = $"Edi, can you scheudle a Skype for business call between the people on the to line tomorrow {aExpertRequest.RequestedDayHalf.ToString().ToLower()}?" 
+                    +"\n" + $"The conversation will cover the following, {aExpertRequest.RequestedConversation}";
                 Content content = new Content("text/plain", messageContent);
     
                 Mail mail = new Mail(from, subject, to, content);
                 mail.AddPersonalization(personalization);
-                mail.MailSettings = GetMailSettings(isTest);
+                mail.MailSettings = GetMailSettings(aExpertRequest.isTest);
                 
                 log.Info($"Email body\n {mail.Get()} ");
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                await LogRequest((ExpertRequest)data);
+                await LogRequest(aExpertRequest);
             }
             catch (Exception ex)
             {
