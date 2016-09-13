@@ -242,7 +242,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
     // get request body
     dynamic data = await req.Content.ReadAsAsync<object>();
-    ExpertRequest aExpertRequest = new ExperRequest();
+    ExpertRequest aExpertRequest = new ExpertRequest();
     aExpertRequest.Topic = data?.Topic;
     aExpertRequest.ReqestorFirstName = data?.ReqestorFirstName;
     aExpertRequest.ReqestorLastNamestring = data?.ReqestorLastName;
