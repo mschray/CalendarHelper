@@ -157,7 +157,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     }
     else
     {
-        
+
             try
             {
                 // setup the other to addresss
@@ -177,7 +177,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 dynamic sg = new SendGridAPIClient(SendGridKey);
     
                 Email from = new Email(FromEmailAddress);
-    
+
                 string subject = "Expert Scheduling request";
     
                 Email to = new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation));
