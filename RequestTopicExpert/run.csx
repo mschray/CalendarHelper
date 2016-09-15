@@ -58,8 +58,8 @@ static void LoadTopicExperts()
 {
     ExpertDictionary = new Dictionary<string, string>();
     
-    // grab from app setting, delimited by ;
-    //"Node","ryanjoy@microsoft.com";"Azure Functions","mschray@microsoft.com";"Azure App Services","mschray@microsoft.com"
+    // grab from app setting, delimited by ; for topics and experts
+    //"Node","foo@microsoft.com";"Azure Functions","foo1@microsoft.com";"Azure App Services","foo2@microsoft.com"
     string Experts = ConfigurationManager.AppSettings["EXPERT_LIST"].ToString();
 
     string[] ExpertList = Experts.Split(";",StringSplitOptions.RemoveEmptyEntries);
