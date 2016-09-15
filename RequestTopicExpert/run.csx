@@ -52,6 +52,10 @@ static void LoadEmailConfiguration()
     BccEmailAddress = ConfigurationManager.AppSettings["BCC_EMAIL"].ToString();
     SchedulerEmailAddress = ConfigurationManager.AppSettings["SCHEDULER_EMAIL"].ToString();
     FromEmailAddress = ConfigurationManager.AppSettings["FROM_EMAL"].ToString();
+    logger.Info($"BCC EMAIL ={BccEmailAddress}.");
+    logger.Info($"SCHEDULER EMAIL ={SchedulerEmailAddress}.");
+    logger.Info($"FROM EMAIL ={FromEmailAddress}.");
+
 }
 
 static void LoadTopicExperts()
@@ -61,6 +65,8 @@ static void LoadTopicExperts()
     // grab from app setting, delimited by ; for topics and experts
     //"Node","foo@microsoft.com";"Azure Functions","foo1@microsoft.com";"Azure App Services","foo2@microsoft.com"
     string Experts = ConfigurationManager.AppSettings["EXPERTS_LIST"].ToString();
+
+    logger.Info($"EXPERTS ={Experts}.");
 
     string[] ExpertList = Experts.Split(';');
 
