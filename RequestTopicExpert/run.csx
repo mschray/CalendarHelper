@@ -10,10 +10,9 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Newtonsoft.Json;
 
-private static string BccEmailAddress = "mschray@microsoft";
-private static string SchedulerEmailAddress = "edi@calendar.help";
-//private static string SchedulerEmailAddress = "martin.schray@hotmail.com";
-private static string FromEmailAddress = "mschray@microsoft.com";
+private static string BccEmailAddress = "";
+private static string SchedulerEmailAddress = "";
+private static string FromEmailAddress = "";
 private static Dictionary<string,string> ExpertDictionary;
 private static TraceWriter logger;
 
@@ -48,19 +47,28 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
     return doc;
 }
 
+static void LoadEmailConfiguration()
+{
+    BccEmailAddress = ConfigurationManager.AppSettings["BCC_EMAIL"].ToString();
+    SchedulerEmailAddress = ConfigurationManager.AppSettings["SCHEDULER_EMAIL"].ToString();
+    FromEmailAddress = ConfigurationManager.AppSettings["FROM_EMAL"].ToString();
+}
 
 static void LoadTopicExperts()
 {
     ExpertDictionary = new Dictionary<string, string>();
     
-    ExpertDictionary.Add("Node","ryanjoy@microsoft.com");
-    ExpertDictionary.Add("Azure Functions","mschray@microsoft.com");
-    ExpertDictionary.Add("Azure App Services","mschray@microsoft.com");
+    // grab from app setting, delimited by ;
+    //"Node","ryanjoy@microsoft.com";"Azure Functions","mschray@microsoft.com";"Azure App Services","mschray@microsoft.com"
+    string Experts = ConfigurationManager.AppSettings["EXPERT_LIST"].ToString();
 
-    foreach (var item in ExpertDictionary)
+    string[] ExpertList = Experts.Split(";",StringSplitOptions.RemoveEmptyEntries);
+
+    foreach (var item in ExpertList)
     {
-        logger.Info($"Loaded topic: {item.ToString()}");
-        
+        string[] TopicDetails = item.Split(',');
+        ExpertDictionary.Add(TopicDetails[0],TopicDetails[1]);
+        logger.Info($"Loaded topic: {TopicDetails[0]} with expert of {TopicDetails[1]}");
     }
 }
 
@@ -107,9 +115,14 @@ public static MailSettings GetMailSettings(bool SandBox)
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
+
+
     // Grab the log and make it a class variable that other methods can use
     logger = log;
     
+    // get email address to use from App settings
+    LoadEmailConfiguration();
+
     log.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
 
     // parse query parameter
