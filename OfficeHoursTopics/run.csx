@@ -30,7 +30,7 @@ public static string[] LoadTopics()
 
 }
 
-public static Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
+public static HttpResponseMessage Run(HttpRequestMessage req, TraceWriter log)
 {
     // save the logging context for later use
     logger = log;
