@@ -1,8 +1,8 @@
 using System.Net;
 using System.Configuration;
 
-
 private static TraceWriter logger;
+
 
 private static string[] LoadTopics()
 {
