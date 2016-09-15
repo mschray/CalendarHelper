@@ -62,7 +62,7 @@ static void LoadTopicExperts()
     //"Node","foo@microsoft.com";"Azure Functions","foo1@microsoft.com";"Azure App Services","foo2@microsoft.com"
     string Experts = ConfigurationManager.AppSettings["EXPERT_LIST"].ToString();
 
-    string[] ExpertList = Experts.Split(';',StringSplitOptions.RemoveEmptyEntries);
+    string[] ExpertList = Experts.Split(';');
 
     foreach (var item in ExpertList)
     {
