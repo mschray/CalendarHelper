@@ -11,7 +11,7 @@ public static string[] LoadTopics()
     logger.Info($"Got TopicsAndExperts: {TopicsAndExperts}");
 
     // split each topic and expert pair
-    string[] ExpertList = Experts.Split(';');
+    string[] ExpertList = TopicsAndExperts.Split(';');
 
     // Create container to return
     List<string> Topics = new List<string>();
