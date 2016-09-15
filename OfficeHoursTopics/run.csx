@@ -4,7 +4,7 @@ using System.Configuration;
 
 private static TraceWriter logger;
 
-public static string[] LoadTopics()
+private static string[] LoadTopics()
 {
     string TopicsAndExperts = ConfigurationManager.AppSettings["EXPERTS_LIST"].ToString();
      
