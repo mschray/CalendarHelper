@@ -3,9 +3,11 @@ using System.Configuration;
 
 private static TraceWriter logger;
 
-
+/// Extract the topics from the and topics and experts list so there is one master list
+/// and topics and experts stay in sync.
 private static string[] LoadTopics()
 {
+    
     string TopicsAndExperts = ConfigurationManager.AppSettings["EXPERTS_LIST"].ToString();
      
     logger.Info($"Got TopicsAndExperts: {TopicsAndExperts}");
