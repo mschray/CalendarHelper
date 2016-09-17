@@ -125,6 +125,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // Grab the log and make it a class variable that other methods can use
     LogHelper.Initialize(log);
 
+
     logger = log;
     
     // get email address to use from App settings
