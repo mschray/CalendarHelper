@@ -158,15 +158,15 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     else
     {
 
-            try
-            {
+        try
+        {
 
-                await SendMail(aExpertRequest);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error($"RequestTopicExpert function had an error.  The message was {ex.Message} an inner excetion of {ex.InnerException} and a stacktrace of {ex.StackTrace}. ");
-            }
+            await SendMail(aExpertRequest);
+        }
+        catch (Exception ex)
+        {
+            LogHelper.Error($"RequestTopicExpert function had an error.  The message was {ex.Message} an inner excetion of {ex.InnerException} and a stacktrace of {ex.StackTrace}. ");
+        }
             
     }
 
