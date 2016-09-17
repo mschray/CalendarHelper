@@ -1,5 +1,6 @@
 //https://azure.microsoft.com/en-us/documentation/articles/functions-reference-csharp/
 #load "..\shared\DocumentDBHelper.csx"
+#load "..\sheard\LogHelper.csx"
 using System;
 using System.Net;
 using System.Net.Mail;
@@ -122,7 +123,7 @@ public static MailSettings GetMailSettings(bool SandBox)
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
 
-
+    LogHelper.Initialize(log);
     // Grab the log and make it a class variable that other methods can use
     logger = log;
     
