@@ -82,7 +82,7 @@ public static MailSettings GetMailSettings(bool SandBox)
     return mailSettings;
 }
 
-public static Task<int> SendMail(ExpertRequest aExpertRequest)
+public static async Task<int> SendMail(ExpertRequest aExpertRequest)
 {
 
     string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
