@@ -7,8 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
+
 using Newtonsoft.Json;
 
 private static string BccEmailAddress = "";

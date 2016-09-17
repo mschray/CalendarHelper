@@ -1,6 +1,8 @@
 #load "LogHelper.csx"
 #load "DocumentDBHelper.csx"
 #load "AppSettingsHelper.csx"
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 
 public static class DocDBLogger
 {
