@@ -82,7 +82,7 @@ public static MailSettings GetMailSettings(bool SandBox)
     return mailSettings;
 }
 
-public static void SendMail(ExpertRequest aExpertRequest)
+public static Task<int> SendMail(ExpertRequest aExpertRequest)
 {
 
     string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
@@ -117,6 +117,8 @@ public static void SendMail(ExpertRequest aExpertRequest)
 
     // got to permanent record
     await DocDBLogger.LogRequest(aExpertRequest);
+
+    return 0;
 }
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
@@ -159,8 +161,8 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
             try
             {
 
-                SendMail(aExpertRequest);
-                
+                await SendMail(aExpertRequest);
+
                 // string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
                 
                 // dynamic sg = new SendGridAPIClient(SendGridKey);
