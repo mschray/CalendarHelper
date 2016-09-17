@@ -7,12 +7,12 @@ public static class LogHelper
         if (logger == null) logger = log;
     } 
 
-    public static void Info(TraceWriter log, string logtext)
+    public static void Info(string logtext)
     {
         logger.Info(logtext); 
     }
 
-    public static void Error(TraceWriter log, string logtext)
+    public static void Error(string logtext)
     {
         logger.Error(logtext); 
     }
