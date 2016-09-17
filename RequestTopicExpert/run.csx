@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Mail;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-
 using Newtonsoft.Json;
 
 private static string BccEmailAddress = "";
@@ -83,6 +82,11 @@ public static MailSettings GetMailSettings(bool SandBox)
     return mailSettings;
 }
 
+public static void SendMail()
+{
+
+}
+
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
     // Grab the log and make it a class variable that other methods can use
@@ -123,19 +127,14 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
             try
             {
-                // setup the other to addresss
-                List<Personalization> Personalization = new List<Personalization>();    
-                //Personalization.Add(new Personalization());
-                
-                // set up another recipent - calendar help
+                // set up another recipents - calendar help, the expert and the customer
+                // because the to line will only take ONE address 
                 Personalization personalization = new Personalization();
                 personalization.AddTo(new Email(SchedulerEmailAddress));  
                 personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
                 personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
                 string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
-                //LogHelper.Info($"The retrived key is {SendGridKey}");
-                //Console.WriteLine($"The retrived key is {SendGridKey}");
                 
                 dynamic sg = new SendGridAPIClient(SendGridKey);
     
