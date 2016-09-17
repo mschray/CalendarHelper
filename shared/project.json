@@ -1,0 +1,10 @@
+{
+  "frameworks": {
+    "net46":{
+      "dependencies": {
+        "SendGrid": "8.0.4",
+        "Microsoft.Azure.DocumentDB": "1.9.5"
+      }
+    }
+   }
+}
