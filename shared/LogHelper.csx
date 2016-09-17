@@ -2,7 +2,7 @@ public static class LogHelper
 {
     private static TraceWriter logger;
 
-    public static void InitializeLogger(TraceWriter log)
+    public static void Initialize(TraceWriter log)
     {
         if (!logger) logger = log;
     } 
