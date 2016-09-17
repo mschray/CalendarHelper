@@ -122,9 +122,9 @@ public static MailSettings GetMailSettings(bool SandBox)
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
-
-    LogHelper.Initialize(log);
     // Grab the log and make it a class variable that other methods can use
+    LogHelper.Initialize(log);
+
     logger = log;
     
     // get email address to use from App settings
