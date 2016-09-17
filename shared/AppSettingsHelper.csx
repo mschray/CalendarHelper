@@ -1,4 +1,4 @@
-load "LogHelper.csx"
+#load "LogHelper.csx"
 
 using System.Configuration;
 
