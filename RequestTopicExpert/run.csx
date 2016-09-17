@@ -1,5 +1,5 @@
 //https://azure.microsoft.com/en-us/documentation/articles/functions-reference-csharp/
-#load "DocumentDBHelper.csx"
+#load "..\shared\DocumentDBHelper.csx"
 using System;
 using System.Net;
 using System.Net.Mail;
