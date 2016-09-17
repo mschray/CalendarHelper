@@ -5,7 +5,6 @@
 using System;
 using System.Net;
 using System.Net.Mail;
-using System.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Microsoft.Azure.Documents;
@@ -28,10 +27,10 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
     {
         string DocDBEndpoint = AppSettingHelper.GetAppSetting("DOCDB_ENDPOINT");
 
-        string DocDBAuthKey = ConfigurationManager.AppSettings["DOCDB_AUTHKEY"].ToString();
+        string DocDBAuthKey = AppSettingsHelper.GetAppSetting("DOCDB_AUTHKEY",false);
 
-        string ExpertRequestDBName = ConfigurationManager.AppSettings["EXPERT_REQUEST_DBNAME"].ToString();
-        string ExperRequestColName = ConfigurationManager.AppSettings["EXPERT_REQUEST_COLLNAME"].ToString();
+        string ExpertRequestDBName = AppSettingsHelper.GetAppSetting("EXPERT_REQUEST_DBNAME");
+        string ExperRequestColName = AppSettingsHelper.GetAppSetting("EXPERT_REQUEST_COLLNAME");
 
         using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
         {
@@ -50,13 +49,9 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
 
 static void LoadEmailConfiguration()
 {
-    BccEmailAddress = ConfigurationManager.AppSettings["BCC_EMAIL"].ToString();
-    SchedulerEmailAddress = ConfigurationManager.AppSettings["SCHEDULER_EMAIL"].ToString();
-    FromEmailAddress = ConfigurationManager.AppSettings["FROM_EMAL"].ToString();
-    LogHelper.Info($"BCC EMAIL ={BccEmailAddress}.");
-    LogHelper.Info($"SCHEDULER EMAIL ={SchedulerEmailAddress}.");
-    LogHelper.Info($"FROM EMAIL ={FromEmailAddress}.");
-
+    BccEmailAddress = AppSettingsHelper.GetAppSetting("BCC_EMAIL");
+    SchedulerEmailAddress = AppSettingsHelper.GetAppSetting("SCHEDULER_EMAIL");
+    FromEmailAddress = AppSettingsHelper.GetAppSetting("FROM_EMAL");
 }
 
 static void LoadTopicExperts()
@@ -65,7 +60,7 @@ static void LoadTopicExperts()
     
     // grab from app setting, delimited by ; for topics and experts
     //"Node","foo@microsoft.com";"Azure Functions","foo1@microsoft.com";"Azure App Services","foo2@microsoft.com"
-    string Experts = ConfigurationManager.AppSettings["EXPERTS_LIST"].ToString();
+    string Experts = AppSettingsHelper.GetAppSetting("EXPERTS_LIST");
 
     LogHelper.Info($"EXPERTS ={Experts}.");
 
@@ -170,7 +165,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
                 personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
-                string SendGridKey = ConfigurationManager.AppSettings["SEND_GRID_API_KEY"].ToString();
+                string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY");
                 //LogHelper.Info($"The retrived key is {SendGridKey}");
                 //Console.WriteLine($"The retrived key is {SendGridKey}");
                 
