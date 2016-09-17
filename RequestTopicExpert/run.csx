@@ -17,7 +17,6 @@ private static string SchedulerEmailAddress = "";
 private static string FromEmailAddress = "";
 private static Dictionary<string,string> ExpertDictionary;
 
-
 public static async Task<Document> LogRequest(ExpertRequest Request)
 {
 

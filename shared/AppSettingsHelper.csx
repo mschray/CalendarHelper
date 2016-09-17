@@ -11,7 +11,7 @@ public static class AppSettingHelper
 
         try
         {
-            string SettingValue = ConfigurationManager.AppSettings[SettingName].ToString();
+            SettingValue = ConfigurationManager.AppSettings[SettingName].ToString();
 
             if ((!String.IsNullOrEmpty(SettingValue)) && LogValue)
             {
