@@ -82,9 +82,41 @@ public static MailSettings GetMailSettings(bool SandBox)
     return mailSettings;
 }
 
-public static void SendMail()
+public static void SendMail(ExpertRequest aExpertRequest)
 {
 
+    string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
+    
+    dynamic sg = new SendGridAPIClient(SendGridKey);
+
+    Email from = new Email(FromEmailAddress);
+
+    string subject = "Expert Scheduling request";
+
+    Email to = new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation));
+
+    string messageContent = $"Edi, can you scheudle a Skype for business call between the people on the to line tomorrow {aExpertRequest.RequestedDayHalf.ToString().ToLower()}?" 
+        +"\n" + $"The conversation will cover the following, {aExpertRequest.RequestedConversation}";
+    Content content = new Content("text/plain", messageContent);
+
+    Mail mail = new Mail(from, subject, to, content);
+
+    // set up another recipents - calendar help, the expert and the customer
+    // because the to line will only take ONE address 
+    Personalization Personalization = new Personalization();
+    Personalization.AddTo(new Email(SchedulerEmailAddress));  
+    Personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
+    Personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
+
+    mail.AddPersonalization(Personalization);
+    mail.MailSettings = GetMailSettings(aExpertRequest.IsTest);
+    
+    LogHelper.Info($"Email body\n {mail.Get()} ");
+
+    dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
+
+    // got to permanent record
+    await DocDBLogger.LogRequest(aExpertRequest);
 }
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
@@ -95,7 +127,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // get email address to use from App settings
     LoadEmailConfiguration();
 
-    LogHelper.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
     LogHelper.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
 
     // parse query parameter
@@ -128,38 +159,40 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
             try
             {
 
-                string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
+                SendMail(aExpertRequest);
                 
-                dynamic sg = new SendGridAPIClient(SendGridKey);
+                // string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
+                
+                // dynamic sg = new SendGridAPIClient(SendGridKey);
     
-                Email from = new Email(FromEmailAddress);
+                // Email from = new Email(FromEmailAddress);
 
-                string subject = "Expert Scheduling request";
+                // string subject = "Expert Scheduling request";
     
-                Email to = new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation));
+                // Email to = new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation));
         
-                string messageContent = $"Edi, can you scheudle a Skype for business call between the people on the to line tomorrow {aExpertRequest.RequestedDayHalf.ToString().ToLower()}?" 
-                    +"\n" + $"The conversation will cover the following, {aExpertRequest.RequestedConversation}";
-                Content content = new Content("text/plain", messageContent);
+                // string messageContent = $"Edi, can you scheudle a Skype for business call between the people on the to line tomorrow {aExpertRequest.RequestedDayHalf.ToString().ToLower()}?" 
+                //     +"\n" + $"The conversation will cover the following, {aExpertRequest.RequestedConversation}";
+                // Content content = new Content("text/plain", messageContent);
     
-                Mail mail = new Mail(from, subject, to, content);
+                // Mail mail = new Mail(from, subject, to, content);
 
-                // set up another recipents - calendar help, the expert and the customer
-                // because the to line will only take ONE address 
-                Personalization Personalization = new Personalization();
-                Personalization.AddTo(new Email(SchedulerEmailAddress));  
-                Personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
-                Personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
+                // // set up another recipents - calendar help, the expert and the customer
+                // // because the to line will only take ONE address 
+                // Personalization Personalization = new Personalization();
+                // Personalization.AddTo(new Email(SchedulerEmailAddress));  
+                // Personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
+                // Personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
-                mail.AddPersonalization(Personalization);
-                mail.MailSettings = GetMailSettings(aExpertRequest.IsTest);
+                // mail.AddPersonalization(Personalization);
+                // mail.MailSettings = GetMailSettings(aExpertRequest.IsTest);
                 
-                LogHelper.Info($"Email body\n {mail.Get()} ");
+                // LogHelper.Info($"Email body\n {mail.Get()} ");
     
-                dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
+                // dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                // got to permanent record
-                await DocDBLogger.LogRequest(aExpertRequest);
+                // // got to permanent record
+                // await DocDBLogger.LogRequest(aExpertRequest);
             }
             catch (Exception ex)
             {
