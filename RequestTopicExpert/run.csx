@@ -1,6 +1,6 @@
 //https://azure.microsoft.com/en-us/documentation/articles/functions-reference-csharp/
 #load "..\shared\DocumentDBHelper.csx"
-#load "..\sheard\LogHelper.csx"
+#load "..\shared\LogHelper.csx"
 using System;
 using System.Net;
 using System.Net.Mail;
