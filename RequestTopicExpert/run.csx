@@ -15,12 +15,11 @@ private static string BccEmailAddress = "";
 private static string SchedulerEmailAddress = "";
 private static string FromEmailAddress = "";
 private static Dictionary<string,string> ExpertDictionary;
-private static TraceWriter logger;
 
 public static async Task<Document> LogRequest(ExpertRequest Request)
 {
 
-     logger.Info($"Log Request input ={Request}."); 
+    LogHelper.Info($"Log Request input ={Request}."); 
 
     Document doc=null;
 
@@ -42,7 +41,7 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
     }
     catch (Exception ex)
     {
-        logger.Info($"Input ={Request} had an exception of {ex.Message}."); 
+        LogHelper.Info($"Input ={Request} had an exception of {ex.Message}."); 
     }
 
     return doc;
@@ -53,9 +52,9 @@ static void LoadEmailConfiguration()
     BccEmailAddress = ConfigurationManager.AppSettings["BCC_EMAIL"].ToString();
     SchedulerEmailAddress = ConfigurationManager.AppSettings["SCHEDULER_EMAIL"].ToString();
     FromEmailAddress = ConfigurationManager.AppSettings["FROM_EMAL"].ToString();
-    logger.Info($"BCC EMAIL ={BccEmailAddress}.");
-    logger.Info($"SCHEDULER EMAIL ={SchedulerEmailAddress}.");
-    logger.Info($"FROM EMAIL ={FromEmailAddress}.");
+    LogHelper.Info($"BCC EMAIL ={BccEmailAddress}.");
+    LogHelper.Info($"SCHEDULER EMAIL ={SchedulerEmailAddress}.");
+    LogHelper.Info($"FROM EMAIL ={FromEmailAddress}.");
 
 }
 
@@ -67,7 +66,7 @@ static void LoadTopicExperts()
     //"Node","foo@microsoft.com";"Azure Functions","foo1@microsoft.com";"Azure App Services","foo2@microsoft.com"
     string Experts = ConfigurationManager.AppSettings["EXPERTS_LIST"].ToString();
 
-    logger.Info($"EXPERTS ={Experts}.");
+    LogHelper.Info($"EXPERTS ={Experts}.");
 
     string[] ExpertList = Experts.Split(';');
 
@@ -75,7 +74,7 @@ static void LoadTopicExperts()
     {
         string[] TopicDetails = item.Split(',');
         ExpertDictionary.Add(TopicDetails[0],TopicDetails[1]);
-        logger.Info($"Loaded topic: {TopicDetails[0]} with expert of {TopicDetails[1]}");
+        LogHelper.Info($"Loaded topic: {TopicDetails[0]} with expert of {TopicDetails[1]}");
     }
 }
 
@@ -88,9 +87,9 @@ public static string GetExpert(string Topic, string Conversation)
         .Value;
 
     if (name == null)
-        logger.Info($"For {Topic} I didn't find an expert."); 
+        LogHelper.Info($"For {Topic} I didn't find an expert."); 
     else
-        logger.Info($"For {Topic} I found an expert in {name}.");
+        LogHelper.Info($"For {Topic} I found an expert in {name}.");
 
     return name == null ? "mschray@microsoft.com" : name;    
 }
@@ -125,14 +124,11 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // Grab the log and make it a class variable that other methods can use
     LogHelper.Initialize(log);
 
-
-    logger = log;
-    
     // get email address to use from App settings
     LoadEmailConfiguration();
 
     LogHelper.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
-    log.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
+    LogHelper.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
 
     // parse query parameter
     string name = req.GetQueryNameValuePairs()
@@ -150,9 +146,9 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     aExpertRequest.RequestedDayHalf = data?.RequestedDayHalf;
     aExpertRequest.IsTest = data?.IsTest;
     
-    log.Info($"Dyanmic data is Request Content={data}");
+    LogHelper.Info($"Dyanmic data is Request Content={data}");
 
-    log.Info($"conversation={aExpertRequest.RequestedConversation}");
+    LogHelper.Info($"conversation={aExpertRequest.RequestedConversation}");
 
     if (aExpertRequest.ReqestorEmailAddress == null)
     {
@@ -174,7 +170,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
                 string SendGridKey = ConfigurationManager.AppSettings["SEND_GRID_API_KEY"].ToString();
-                //log.Info($"The retrived key is {SendGridKey}");
+                //LogHelper.Info($"The retrived key is {SendGridKey}");
                 //Console.WriteLine($"The retrived key is {SendGridKey}");
                 
                 dynamic sg = new SendGridAPIClient(SendGridKey);
@@ -193,7 +189,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 mail.AddPersonalization(personalization);
                 mail.MailSettings = GetMailSettings(aExpertRequest.IsTest);
                 
-                log.Info($"Email body\n {mail.Get()} ");
+                LogHelper.Info($"Email body\n {mail.Get()} ");
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
@@ -201,7 +197,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
             }
             catch (Exception ex)
             {
-                log.Info($"RequestTopicExpert function had an error.  The message was {ex.Message} an inner excetion of {ex.InnerException} and a stacktrace of {ex.StackTrace}. ");
+                LogHelper.Error($"RequestTopicExpert function had an error.  The message was {ex.Message} an inner excetion of {ex.InnerException} and a stacktrace of {ex.StackTrace}. ");
             }
             
     }
