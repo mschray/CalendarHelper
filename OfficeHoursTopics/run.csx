@@ -1,5 +1,6 @@
+#load "..\shared\LogHelper.csx"
+#load "..\shared\AppSettingsHelper.csx"
 using System.Net;
-using System.Configuration;
 
 private static TraceWriter logger;
 
@@ -8,9 +9,9 @@ private static TraceWriter logger;
 private static string[] LoadTopics()
 {
     
-    string TopicsAndExperts = ConfigurationManager.AppSettings["EXPERTS_LIST"].ToString();
+    string TopicsAndExperts = AppSettingsHelper.GetAppSetting("EXPERTS_LIST");
      
-    logger.Info($"Got TopicsAndExperts: {TopicsAndExperts}");
+    LogHelper.Info($"Got TopicsAndExperts: {TopicsAndExperts}");
 
     // split each topic and expert pair
     string[] ExpertList = TopicsAndExperts.Split(';');
@@ -25,7 +26,7 @@ private static string[] LoadTopics()
 
         // load topic
         Topics.Add(TopicDetails[0]);
-        logger.Info($"Loaded topic: {TopicDetails[0]}");
+        LogHelper.Info($"Loaded topic: {TopicDetails[0]}");
     }
 
     return Topics.ToArray();
@@ -35,9 +36,9 @@ private static string[] LoadTopics()
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
     // save the logging context for later use
-    logger = log;
+    LogHelper.Initialize(log);
 
-    log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
+    LogHelper.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
 
     string[] Topics = LoadTopics();
 
