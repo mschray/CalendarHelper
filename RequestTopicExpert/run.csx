@@ -165,7 +165,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
                 personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
-                string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY");
+                string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
                 //LogHelper.Info($"The retrived key is {SendGridKey}");
                 //Console.WriteLine($"The retrived key is {SendGridKey}");
                 
