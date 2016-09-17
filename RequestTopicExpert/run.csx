@@ -158,6 +158,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
+                // got to permanent record
                 await DocDBLogger.LogRequest(aExpertRequest);
             }
             catch (Exception ex)
