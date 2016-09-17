@@ -7,6 +7,7 @@ public static class LogHelper
         if (!logger) logger = log;
     } 
 
+
     public static void Info(TraceWriter log, string logtext)
     {
         logger.Info(logtext); 
