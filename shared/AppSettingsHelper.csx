@@ -2,7 +2,7 @@
 
 using System.Configuration;
 
-public static class AppSettingHelper
+public static class AppSettingsHelper
 {
     public static string GetAppSetting(string SettingName, bool LogValue = true )
     {

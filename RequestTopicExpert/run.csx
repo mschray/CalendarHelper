@@ -25,7 +25,7 @@ public static async Task<Document> LogRequest(ExpertRequest Request)
 
     try
     {
-        string DocDBEndpoint = AppSettingHelper.GetAppSetting("DOCDB_ENDPOINT");
+        string DocDBEndpoint = AppSettingsHelper.GetAppSetting("DOCDB_ENDPOINT");
 
         string DocDBAuthKey = AppSettingsHelper.GetAppSetting("DOCDB_AUTHKEY",false);
 
