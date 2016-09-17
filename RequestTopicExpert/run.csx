@@ -1,5 +1,5 @@
 //https://azure.microsoft.com/en-us/documentation/articles/functions-reference-csharp/
-#load "..\shared\DocumentDBHelper.csx"
+#load "..\shared\DocDBLogger.csx"
 #load "..\shared\LogHelper.csx"
 #load "..\shared\AppSettingsHelper.csx"
 using System;
@@ -15,37 +15,6 @@ private static string BccEmailAddress = "";
 private static string SchedulerEmailAddress = "";
 private static string FromEmailAddress = "";
 private static Dictionary<string,string> ExpertDictionary;
-
-public static async Task<Document> LogRequest(ExpertRequest Request)
-{
-
-    LogHelper.Info($"Log Request input ={Request}."); 
-
-    Document doc=null;
-
-    try
-    {
-        string DocDBEndpoint = AppSettingsHelper.GetAppSetting("DOCDB_ENDPOINT");
-
-        string DocDBAuthKey = AppSettingsHelper.GetAppSetting("DOCDB_AUTHKEY",false);
-
-        string ExpertRequestDBName = AppSettingsHelper.GetAppSetting("EXPERT_REQUEST_DBNAME");
-        string ExperRequestColName = AppSettingsHelper.GetAppSetting("EXPERT_REQUEST_COLLNAME");
-
-        using (DocumentClient client = new DocumentClient(new Uri(DocDBEndpoint), DocDBAuthKey))
-        {
-            Database db = await  DocDBHelper.GetOrCreateDatabaseAsync(client, ExpertRequestDBName );
-            DocumentCollection col = await  DocDBHelper.GetOrCreateCollectionAsync(client, ExpertRequestDBName,  ExperRequestColName);
-            doc = await client.CreateDocumentAsync(col.SelfLink, Request );
-        }
-    }
-    catch (Exception ex)
-    {
-        LogHelper.Info($"Input ={Request} had an exception of {ex.Message}."); 
-    }
-
-    return doc;
-}
 
 static void LoadEmailConfiguration()
 {
@@ -189,7 +158,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     
                 dynamic response = await sg.client.mail.send.post(requestBody: mail.Get());
 
-                await LogRequest(aExpertRequest);
+                await DocDBLogger.LogRequest(aExpertRequest);
             }
             catch (Exception ex)
             {
