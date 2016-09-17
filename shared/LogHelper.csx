@@ -4,7 +4,7 @@ public static class LogHelper
 
     public static void Initialize(TraceWriter log)
     {
-        if (!logger) logger = log;
+        if (logger == null) logger = log;
     } 
 
 
