@@ -127,12 +127,6 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
             try
             {
-                // set up another recipents - calendar help, the expert and the customer
-                // because the to line will only take ONE address 
-                Personalization personalization = new Personalization();
-                personalization.AddTo(new Email(SchedulerEmailAddress));  
-                personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
-                personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
 
                 string SendGridKey = AppSettingsHelper.GetAppSetting("SEND_GRID_API_KEY",false);
                 
@@ -149,7 +143,15 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
                 Content content = new Content("text/plain", messageContent);
     
                 Mail mail = new Mail(from, subject, to, content);
-                mail.AddPersonalization(personalization);
+
+                // set up another recipents - calendar help, the expert and the customer
+                // because the to line will only take ONE address 
+                Personalization Personalization = new Personalization();
+                Personalization.AddTo(new Email(SchedulerEmailAddress));  
+                Personalization.AddTo(new Email(aExpertRequest.ReqestorEmailAddress));  
+                Personalization.AddTo(new Email(GetExpert(aExpertRequest.Topic,aExpertRequest.RequestedConversation)));
+
+                mail.AddPersonalization(Personalization);
                 mail.MailSettings = GetMailSettings(aExpertRequest.IsTest);
                 
                 LogHelper.Info($"Email body\n {mail.Get()} ");
