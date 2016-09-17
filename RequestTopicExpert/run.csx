@@ -130,6 +130,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     // get email address to use from App settings
     LoadEmailConfiguration();
 
+    LogHelper.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
     log.Info($"C# HTTP trigger function processed a request. Request Content={await req.Content.ReadAsStringAsync()}");
 
     // parse query parameter
